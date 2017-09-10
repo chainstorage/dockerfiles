@@ -7,10 +7,10 @@ RUN set -ex \
 	&& apt-get install -qq --no-install-recommends ca-certificates dirmngr supervisor python-requests gpgv git wget \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV BITCOIN_VERSION 0.14.2
-ENV BITCOIN_URL https://bitcoin.org/bin/bitcoin-core-0.14.2/bitcoin-0.14.2-x86_64-linux-gnu.tar.gz
-ENV BITCOIN_SHA256 20acc6d5d5e0c4140387bc3445b8b3244d74c1c509bd98f62b4ee63bec31a92b
-ENV BITCOIN_ASC_URL https://bitcoin.org/bin/bitcoin-core-0.14.2/SHA256SUMS.asc
+ENV BITCOIN_VERSION 0.14.1
+ENV BITCOIN_URL https://bitcoin.org/bin/bitcoin-core-0.14.1/bitcoin-0.14.1-x86_64-linux-gnu.tar.gz
+ENV BITCOIN_SHA256 0c6920a9f3181a95ca029fdac5342b5702569ee441ec2128d19051f281683058
+ENV BITCOIN_ASC_URL https://bitcoin.org/bin/bitcoin-core-0.14.1/SHA256SUMS.asc
 ENV BITCOIN_PGP_KEY 01EA5486DE18A882D4C2684590C8019E36C2E964
 
 # install bitcoin binaries
