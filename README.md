@@ -35,3 +35,5 @@ CCUnRPC:
 
 [CryptoCurrencies Unified Remote Procedure Call interface.](https://github.com/chainstorage/CCUnRPC)
 
+     python -c "import xmlrpclib;print xmlrpclib.ServerProxy('http://root:password@localhost:9002/RPC2').ccunrpc.get_height()"
+     
