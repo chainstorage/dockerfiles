@@ -1,40 +1,29 @@
 Repo for currency Dockerfile
 ============================
-Dockerfiles for cryptocurrencies daemons
+Universal way to manage cryptocurrencies daemons. 
+Each container
+ 
+Consist of:
+----------
+- `supervisord`
+- `currensy daemon` (managed by supervisord)
+- `something else` which depends on daemon (managed by supervisord to)
+
+Data dirs:
+----------
+ - `/data` - home dir for daemon, contain blockchain and etc
+ - `/config` - contain cc daemons config, supervisord. (Will not overwrite if you bid to local dir)
+ - `/logs`
+ - `/secrets` - for you wallets and other private data. (You have to save it at encrypted local storage if it's real money)
 
 
-Requirements:
-------------
-
-
-Build:
-------
-
-    docker build -t 'bitcoind:0.14.2_001' git@gitlab.kitchen.loc:cecilia/dockerfiles.git#master:bitcoind
-    docker tag bitcoind:0.14.2_001 chainstorage/bitcoind:0.14.2_001
-    docker push chainstorage/bitcoind:0.14.2_001
-
-    docker tag chainstorage/bitcoind:0.14.2_001 chainstorage/bitcoind
-    docker push chainstorage/bitcoind
-
-Usage:
-------
-
-    # Run
-    docker run --name bitcoind -v "~/bitcoind/data:/data" -v "~/bitcoind/logs:/logs" -v "~/bitcoind/config:/config" -p 9001:9001 -p 8332:8332 chainstorage/bitcoind
+Manage:
+-------
+You can use default supervisord methods and module [CryptoCurrencies Unified Remote Procedure Call interface](https://github.com/chainstorage/CCUnRPC) 
 
     # Supervisord RPC-client:
-    python -c "import xmlrpclib;print xmlrpclib.ServerProxy('http://root:password@localhost:9001/RPC2').supervisor.stopProcess('bitcoind')"
-    python -c "import xmlrpclib;print xmlrpclib.ServerProxy('http://root:password@localhost:9001/RPC2').supervisor.startProcess('bitcoind')"
+    python -c "import xmlrpclib;print xmlrpclib.ServerProxy('http://root:password@localhost:9003/RPC2').supervisor.stopProcess('bitcoind')"
+    python -c "import xmlrpclib;print xmlrpclib.ServerProxy('http://root:password@localhost:9003/RPC2').supervisor.startProcess('bitcoind')"
 
-    # Bitcoin RPC client:
-    curl -s --user rpcuser:rpcpassword --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getinfo", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:8332/ |jq .result.blocks
-
-
-CCUnRPC:
---------
-
-[CryptoCurrencies Unified Remote Procedure Call interface.](https://github.com/chainstorage/CCUnRPC)
-
-     python -c "import xmlrpclib;print xmlrpclib.ServerProxy('http://root:password@localhost:9002/RPC2').ccunrpc.get_height()"
-     
+    # CCUnRPC 
+    python -c "import xmlrpclib;print xmlrpclib.ServerProxy('http://root:password@localhost:9003/RPC2').ccunrpc.get_height()"
