@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 
-ENV PARITY_VERSION v1.7.0
+ENV PARITY_VERSION v1.7.2
 ENV DEPS_FOR_RUNING supervisor python-requests ca-certificates openssl
 ENV DEPS_FOR_BUILDING g++ build-essential curl git file libssl-dev pkg-config libudev-dev
 
