@@ -22,11 +22,8 @@ RUN set -ex \
 
     ####################### SUPERVISORD ################################################
 
-COPY CCUnRPC /usr/lib/python2.7/dist-packages/ccunrpc/
-RUN   mkdir -p  /var/run; \
-
-#RUN { git clone -b monero https://github.com/chainstorage/CCUnRPC.git  /usr/lib/python2.7/dist-packages/ccunrpc/; \
-#    mkdir -p  /var/run; \
+RUN { git clone -b monero https://github.com/chainstorage/CCUnRPC.git  /usr/lib/python2.7/dist-packages/ccunrpc/; \
+    mkdir -p  /var/run; \
 
     ########################## CLEAN UP ################################################
     apt-get autoremove -y; \
