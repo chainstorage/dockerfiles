@@ -1,8 +1,7 @@
 FROM ubuntu:16.04
 
 
-ENV BIMONEROD_VERSION 	v0.11.1.0
-ENV BIMONEROD_URL https://downloads.getmonero.org/cli/monero-linux-x64-$BIMONEROD_VERSION.tar.bz2
+ENV BIMONEROD_URL https://downloads.getmonero.org/cli/monero-linux-x64-v0.11.1.0.tar.bz2
 RUN groupadd -r bitmonero && useradd -r -m -g bitmonero bitmonero
 
 # install main dependencies
@@ -21,13 +20,13 @@ RUN set -ex \
     && rm -rf *monero*
 
     ####################### SUPERVISORD ################################################
-
-RUN { git clone -b monero https://github.com/chainstorage/CCUnRPC.git  /usr/lib/python2.7/dist-packages/ccunrpc/; \
+RUN { git clone https://github.com/chainstorage/CCUnRPC.git  /usr/lib/python2.7/dist-packages/ccunrpc/; \
     mkdir -p  /var/run; \
 
     ########################## CLEAN UP ################################################
     apt-get autoremove -y; \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*; \
+}
 
 RUN { set -ex; \
     mkdir /default; \
@@ -41,8 +40,7 @@ VOLUME ["/data", "/secrets", "/config", "/logs"]
 COPY conf/* /default/
 
 COPY entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["bash","/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
 
 
-#EXPOSE 18080 18180 9001
-EXPOSE  18081 18080 9001
+EXPOSE 8080 8545 8180 9001
