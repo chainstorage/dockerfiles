@@ -40,6 +40,7 @@ VOLUME ["/data", "/secrets", "/config", "/logs"]
 COPY conf/* /default/
 
 COPY entrypoint.sh /entrypoint.sh
+RUN chmod u+x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 
