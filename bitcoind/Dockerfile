@@ -41,6 +41,7 @@ RUN { set -ex; \
     mkdir -p /var/run; \
 }
 
+COPY ep_lib.sh /ep_lib.sh
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
