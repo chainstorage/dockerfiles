@@ -1,23 +1,25 @@
 #!/bin/bash
+#
+# Entrypoint script for currency daemon container
+
 set -e
 
-############ /logs ######################
+source ./ep_lib.sh
+
+########## /logs ###################################################
 #chmod 777 /logs
 
-############ /config ######################
-if [[ ! -s "/config/supervisord.conf" ]]; then
-    cp /default/supervisord.conf /config/supervisord.conf
-fi
+########## /config #################################################
+check_config supervisord.conf
+check_config bitcoin.conf bitcoin:bitcoin 0640
 
-if [[ ! -s "/config/bitcoin.conf" ]]; then
-    cp /default/bitcoin.conf /config/bitcoin.conf
-	chown bitcoin:bitcoin "/config/bitcoin.conf"
-fi
-
-############ /data ######################
+########## /data ###################################################
 chown -R bitcoin /data
 
-############ /secrets ######################
+############ /secrets ##############################################
 chown -R bitcoin /secrets
+
+############ bootstrap process #####################################
+bootstrap_if_required blocks
 
 exec /usr/bin/supervisord -c /config/supervisord.conf
