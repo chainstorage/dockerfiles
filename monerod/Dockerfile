@@ -1,7 +1,7 @@
 FROM ubuntu:16.04
 
-
-ENV BIMONEROD_URL https://downloads.getmonero.org/cli/monero-linux-x64-v0.11.1.0.tar.bz2
+ENV BIMONEROD v0.11.0.0
+ENV BIMONEROD_URL https://downloads.getmonero.org/cli/monero-linux-x64-${BIMONEROD}.tar.bz2
 RUN groupadd -r bitmonero && useradd -r -m -g bitmonero bitmonero
 
 # install main dependencies
@@ -44,4 +44,4 @@ RUN chmod u+x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 
-EXPOSE 8080 8545 8180 9001
+EXPOSE 18080 18081 9001
