@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:16.04 as builder
 
 RUN groupadd -r bitcoin && useradd -r -m -g bitcoin bitcoin
 
@@ -8,10 +8,18 @@ RUN set -ex \
 	&& rm -rf /var/lib/apt/lists/*
 
 ENV BITCOIN_VERSION 0.15.0.1
-ENV BITCOIN_URL https://bitcoin.org/bin/bitcoin-core-0.15.0.1/bitcoin-0.15.0.1-x86_64-linux-gnu.tar.gz
+ENV BITCOIN_URL https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}-x86_64-linux-gnu.tar.gz
 ENV BITCOIN_SHA256 ae3efa47bf87a694a5368cd6fea96c9942fe9be7856720b5027c8902e46a88d1
-ENV BITCOIN_ASC_URL https://bitcoin.org/bin/bitcoin-core-0.15.0.1/SHA256SUMS.asc
+ENV BITCOIN_ASC_URL https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc
 ENV BITCOIN_PGP_KEY 01EA5486DE18A882D4C2684590C8019E36C2E964
+
+
+
+# supervisor
+RUN { set -ex; \
+    git clone https://github.com/chainstorage/CCUnRPC.git /usr/lib/python2.7/dist-packages/ccunrpc/; \
+    mkdir -p /var/run; \
+}
 
 # install bitcoin binaries
 RUN set -ex \
@@ -21,8 +29,24 @@ RUN set -ex \
 	&& gpg --keyserver keyserver.ubuntu.com --recv-keys $BITCOIN_PGP_KEY \
 	&& wget -qO bitcoin.asc $BITCOIN_ASC_URL \
 	&& gpg --verify bitcoin.asc \
-	&& tar -xzvf $BITCOIN_DIST -C /usr/local --strip-components=1 --exclude=*-qt \
-	&& rm bitcoin*
+	&& mkdir /artifact \
+	&& tar -xzvf $BITCOIN_DIST -C /artifact --strip-components=1 --exclude=*-qt
+
+
+### END BUILDER  ###
+
+
+FROM ubuntu:16.04
+
+RUN groupadd -r bitcoin && useradd -r -m -g bitcoin bitcoin
+
+COPY --from=0   /usr/lib/python2.7/dist-packages/ccunrpc/  /usr/lib/python2.7/dist-packages/ccunrpc/
+COPY --from=0   /artifact /usr
+
+RUN set -ex \
+	&& apt-get update \
+	&& apt-get install -qq --no-install-recommends supervisor python-requests \
+	&& rm -rf /var/lib/apt/lists/*
 
 RUN { set -ex; \
     mkdir /default; \
@@ -34,12 +58,6 @@ RUN { set -ex; \
 VOLUME ["/data", "/secrets", "/config", "/logs"]
 
 COPY conf/* /default/
-
-# supervisor
-RUN { set -ex; \
-    git clone https://github.com/chainstorage/CCUnRPC.git /usr/lib/python2.7/dist-packages/ccunrpc/; \
-    mkdir -p /var/run; \
-}
 
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]

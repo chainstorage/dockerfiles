@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:16.04 as builder
 
 ENV PARITY_VERSION v1.7.9
 ENV DEPS_FOR_RUNING supervisor python-requests ca-certificates openssl
@@ -27,18 +27,29 @@ RUN { set -ex; \
     # build & install
     export RUST_BACKTRACE=1; \
     cargo build --release --features final --verbose; \
-    mv target/release/parity /usr/bin; \
+    cp target/release/parity /usr/bin; \
     rm -rf /root/.cargo /root/.rustup; \
 
     ####################### SUPERVISORD ################################################
     git clone https://github.com/chainstorage/CCUnRPC.git  /usr/lib/python2.7/dist-packages/ccunrpc/; \
     mkdir -p  /var/run; \
 
-    ########################## CLEAN UP ################################################
-    apt-get remove -y $DEPS_FOR_BUILDING; \
-    apt-get autoremove -y; \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*; \
 }
+#ENTRYPOINT bash
+FROM ubuntu:16.04
+
+ENV DEPS_FOR_RUNING supervisor python-requests ca-certificates openssl
+
+RUN { set -ex; \
+    # install deps
+    apt-get update; \
+    apt-get install --no-install-recommends -y $DEPS_FOR_RUNING ; \
+    rm -rf /var/lib/apt/lists/* ; \
+}
+
+COPY --from=0   /usr/lib/python2.7/dist-packages/ccunrpc/  /usr/lib/python2.7/dist-packages/ccunrpc/
+COPY --from=0   /tmp/parity/target/release/parity /usr/bin
+
 
 RUN { set -ex; \
     mkdir /default; \
