@@ -10,6 +10,7 @@ source ./ep_lib.sh
 #chmod 777 /logs
 
 ########## /config #################################################
+check_kv_config bitcoin.conf /daemon.conf.tpl bitcoin:bitcoin 0640
 check_config supervisord.conf
 check_config bitcoin.conf bitcoin:bitcoin 0640
 

@@ -24,6 +24,23 @@ RUN set -ex \
 	&& tar -xzvf $BITCOIN_DIST -C /usr/local --strip-components=1 --exclude=*-qt \
 	&& rm bitcoin*
 
+# install consul-template
+
+RUN set -ex \
+	&& CT_VER="0.19.4" \
+	&& CT_URL="https://releases.hashicorp.com/consul-template/${CT_VER}/consul-template_${CT_VER}_linux_amd64.tgz" \
+	&& CT_FILE="$(basename ${CT_URL})" \
+	&& CT_SHA256="d8f349a1cc827f3bfe3c707a361739ba91dbb6c16dad445cb0226d34be19c47e" \
+	&& wget -qO ${CT_FILE} ${CT_URL} \
+	&& echo "${CT_SHA256} ${CT_FILE}" | sha256sum -c - \
+	&& tar -xzf ${CT_FILE} -C /usr/bin \
+	&& rm ${CT_FILE}
+
+COPY consul-template/daemon.conf.tpl /daemon.conf.tpl
+
+ENV CDAEMON_CODE "BTC"
+ENV CDAEMON_ID ""
+
 RUN { set -ex; \
     mkdir /default; \
     mkdir /data; chown -R bitcoin:bitcoin /data; \
