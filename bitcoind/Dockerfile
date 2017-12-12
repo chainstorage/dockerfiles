@@ -1,6 +1,7 @@
 FROM ubuntu:16.04
 
-RUN groupadd -r bitcoin && useradd -r -m -g bitcoin bitcoin
+RUN groupadd --system --gid 19000 bitcoin \
+	&& useradd --system --uid 19000 --create-home --gid bitcoin bitcoin
 
 RUN set -ex \
 	&& apt-get update \

@@ -12,8 +12,10 @@ if [[ ! -s "/config/parity.conf" ]]; then
     cp /default/parity.conf /config/parity.conf
 fi
 
-############ /data ######################
+########## /data ###################################################
+chown -R parity /data
 
-############ /secrets ######################
+############ /secrets ##############################################
+chown -R parity /secrets
 
 exec /usr/bin/supervisord -c /config/supervisord.conf
