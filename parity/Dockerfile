@@ -4,7 +4,7 @@ RUN groupadd --system --gid 19000 parity \
 	&& useradd --system --uid 19000 --create-home --gid parity parity
 
 ENV PARITY_VERSION v1.7.9
-ENV DEPS_FOR_RUNING supervisor python-requests ca-certificates openssl
+ENV DEPS_FOR_RUNING supervisor python-requests ca-certificates openssl wget
 ENV DEPS_FOR_BUILDING g++ build-essential curl git file libssl-dev pkg-config libudev-dev
 
 RUN { set -ex; \
@@ -54,6 +54,7 @@ VOLUME ["/data", "/secrets", "/config", "/logs"]
 
 COPY conf/* /default/
 
+COPY ep_lib.sh /ep_lib.sh
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
