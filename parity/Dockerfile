@@ -3,7 +3,7 @@ FROM ubuntu:16.04
 RUN groupadd --system --gid 19000 parity \
 	&& useradd --system --uid 19000 --create-home --gid parity parity
 
-ENV PARITY_VERSION v1.7.9
+ENV PARITY_VERSION v1.7.10
 ENV DEPS_FOR_RUNING supervisor python-requests ca-certificates openssl wget
 ENV DEPS_FOR_BUILDING g++ build-essential curl git file libssl-dev pkg-config libudev-dev
 

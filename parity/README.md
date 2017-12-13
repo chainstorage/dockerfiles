@@ -7,10 +7,10 @@ Prepare: (optional)
 
 Run:
     
-    docker run --name parity -v "~/parity/data:/data" \
-                             -v "~/parity/logs:/logs" \
-                             -v "~/parity/config:/config" \
-                             -v "~/parity/secrets:/secrets" \
+    docker run --name parity -v "$HOME/parity/data:/data" \
+                             -v "$HOME/parity/logs:/logs" \
+                             -v "$HOME/parity/config:/config" \
+                             -v "$HOME/parity/secrets:/secrets" \
                              -p 9001:9002 \
                              -p 8332:8332 \
                              chainstorage/parity
