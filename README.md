@@ -33,6 +33,21 @@ Run (example):
                              -p 8332:8332 \
                              chainstorage/parity
 
+Run with bootstrap in one command
+------------------------------
+Fetch blockchain and run:
+     
+     LOGIN="";
+     PASSWORD="";
+     sudo bash -c 'mkdir -p /opt/bitcoind/data /opt/bitcoind/logs /opt/bitcoind/config /opt/bitcoind/secrets && echo "FETCH https://bitcoind-default.chainstorage.io/last/ $LOGIN $PASSWORD" >> /opt/bitcoind/data/bootstrap && docker run --name bitcoind  -v "/opt/bitcoind/data:/data" \
+                            -v "/opt/bitcoind/logs:/logs" \
+                            -v "/opt/bitcoind/config:/config" \
+                            -v "/opt/bitcoind/secrets:/secrets" \
+                            -p 9001:9003 \
+                            -p 8332:8332 \
+                            chainstorage/bitcoind'
+
+
 Manage:
 -------
 You can use default supervisord methods and module [CryptoCurrencies Unified Remote Procedure Call interface](https://github.com/chainstorage/CCUnRPC) 
