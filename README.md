@@ -32,6 +32,19 @@ Run (example):
                              -p 9001:9002 \
                              -p 8332:8332 \
                              chainstorage/parity
+                             
+Run with bootsrtap:
+-------------------
+
+Fetching blockchain and run in one line:
+
+    sudo bash -c 'mkdir -p /opt/bitcoind/data /opt/bitcoind/logs /opt/bitcoind/config /opt/bitcoind/secrets && echo "FETCH https://bitcoind-default.chainstorage.io/last/ test test" >> /opt/bitcoind/data/bootstrap && docker run --name bitcoind  -v "/opt/bitcoind/data:/data" \
+                            -v "/opt/bitcoind/logs:/logs" \
+                            -v "/opt/bitcoind/config:/config" \
+                            -v "/opt/bitcoind/secrets:/secrets" \
+                            -p 9001:9003 \
+                            -p 8332:8332 \
+                            chainstorage/bitcoind'
 
 Manage:
 -------
