@@ -10,13 +10,13 @@ source ./ep_lib.sh
 check_config supervisord.conf
 check_config parity.conf parity:parity 0640
 
+############ bootstrap process #####################################
+bootstrap_if_required chains
+
 ########## /data ###################################################
 chown -R parity /data
 
 ############ /secrets ##############################################
 chown -R parity /secrets
-
-############ bootstrap process #####################################
-bootstrap_if_required chains
 
 exec /usr/bin/supervisord -c /config/supervisord.conf

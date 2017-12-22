@@ -13,14 +13,14 @@ source ./ep_lib.sh
 check_config supervisord.conf
 check_config bitcoin.conf bitcoin:bitcoin 0640
 
+############ bootstrap process #####################################
+bootstrap_if_required blocks
+
 ########## /data ###################################################
 chown -R bitcoin /data
 
 ############ /secrets ##############################################
 chown -R bitcoin /secrets
-
-############ bootstrap process #####################################
-bootstrap_if_required blocks
 
 ########## data symlink hack #######################################
 # https://github.com/bitcoin/bitcoin/pull/11343#issuecomment-329874563
