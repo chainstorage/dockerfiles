@@ -7,10 +7,10 @@ Prepare: (optional)
 
 Run:
     
-    docker run --name bitcoind  -v "~/bitcoind/data:/data" \
-                                -v "~/bitcoind/logs:/logs" \
-                                -v "~/bitcoind/config:/config" \
-                                -v "~/bitcoind/secrets:/secrets" \                                
+    docker run --name bitcoind  -v "$HOME/bitcoind/data:/data" \
+                                -v "$HOME/bitcoind/logs:/logs" \
+                                -v "$HOME/bitcoind/config:/config" \
+                                -v "$HOME/bitcoind/secrets:/secrets" \
                                 -p 9001:9003 \
                                 -p 8332:8332 \
                                 chainstorage/bitcoind
