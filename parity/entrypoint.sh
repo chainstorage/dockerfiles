@@ -1,19 +1,22 @@
 #!/bin/bash
+#
+# Entrypoint script for currency daemon container
+
 set -e
 
-############ /logs ######################
+source ./ep_lib.sh
 
-############ /config ######################
-if [[ ! -s "/config/supervisord.conf" ]]; then
-    cp /default/supervisord.conf /config/supervisord.conf
-fi
+########## /config #################################################
+check_config supervisord.conf
+check_config parity.conf parity:parity 0640
 
-if [[ ! -s "/config/parity.conf" ]]; then
-    cp /default/parity.conf /config/parity.conf
-fi
+############ bootstrap process #####################################
+bootstrap_if_required chains
 
-############ /data ######################
+########## /data ###################################################
+chown -R parity /data
 
-############ /secrets ######################
+############ /secrets ##############################################
+chown -R parity /secrets
 
 exec /usr/bin/supervisord -c /config/supervisord.conf

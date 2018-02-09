@@ -1,16 +1,17 @@
 FROM ubuntu:16.04
 
-RUN groupadd -r bitcoin && useradd -r -m -g bitcoin bitcoin
+RUN groupadd --system --gid 19000 bitcoin \
+	&& useradd --system --uid 19000 --create-home --gid bitcoin bitcoin
 
 RUN set -ex \
 	&& apt-get update \
 	&& apt-get install -qq --no-install-recommends ca-certificates dirmngr supervisor python-requests gpgv git wget \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV BITCOIN_VERSION 0.15.0.1
-ENV BITCOIN_URL https://bitcoin.org/bin/bitcoin-core-0.15.0.1/bitcoin-0.15.0.1-x86_64-linux-gnu.tar.gz
-ENV BITCOIN_SHA256 ae3efa47bf87a694a5368cd6fea96c9942fe9be7856720b5027c8902e46a88d1
-ENV BITCOIN_ASC_URL https://bitcoin.org/bin/bitcoin-core-0.15.0.1/SHA256SUMS.asc
+ENV BITCOIN_VERSION 0.15.1
+ENV BITCOIN_URL https://bitcoin.org/bin/bitcoin-core-0.15.1/bitcoin-0.15.1-x86_64-linux-gnu.tar.gz
+ENV BITCOIN_SHA256 387c2e12c67250892b0814f26a5a38f837ca8ab68c86af517f975a2a2710225b
+ENV BITCOIN_ASC_URL https://bitcoin.org/bin/bitcoin-core-0.15.1/SHA256SUMS.asc
 ENV BITCOIN_PGP_KEY 01EA5486DE18A882D4C2684590C8019E36C2E964
 
 # install bitcoin binaries

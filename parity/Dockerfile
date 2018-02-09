@@ -1,7 +1,10 @@
 FROM ubuntu:16.04
 
-ENV PARITY_VERSION v1.7.2
-ENV DEPS_FOR_RUNING supervisor python-requests ca-certificates openssl
+RUN groupadd --system --gid 19000 parity \
+	&& useradd --system --uid 19000 --create-home --gid parity parity
+
+ENV PARITY_VERSION v1.7.12
+ENV DEPS_FOR_RUNING supervisor python-requests ca-certificates openssl wget
 ENV DEPS_FOR_BUILDING g++ build-essential curl git file libssl-dev pkg-config libudev-dev
 
 RUN { set -ex; \
@@ -42,8 +45,8 @@ RUN { set -ex; \
 
 RUN { set -ex; \
     mkdir /default; \
-    mkdir /data; \
-    mkdir /secrets; \
+    mkdir /data; chown -R parity:parity /data; \
+    mkdir /secrets; chown -R parity:parity /secrets; \
     mkdir /config; \
     mkdir /logs; \
 }
@@ -51,6 +54,7 @@ VOLUME ["/data", "/secrets", "/config", "/logs"]
 
 COPY conf/* /default/
 
+COPY ep_lib.sh /ep_lib.sh
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
