@@ -7,6 +7,7 @@ set -e
 source ./ep_lib.sh
 
 ########## /config #################################################
+check_kv_config parity.conf /daemon.conf.tpl parity:parity 0640
 check_config supervisord.conf
 check_config parity.conf parity:parity 0640
 

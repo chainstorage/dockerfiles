@@ -4,6 +4,7 @@
 # echo_log
 # echo_err
 # check_config
+# check_kv_config
 # bootstrap_if_required
 
 ######################################################################
@@ -57,6 +58,59 @@ check_config() {
     echo_log "Runtime configuration found. Ok."
   fi
 }
+
+######################################################################
+# Check for centralized KV config with consul-template
+#   and overwrite current runtime config with generated one
+# Will do nothing if DISABLE_KV_CONFIG env var is set
+# Arguments:
+#   config_name   - required, example: bitcoin.conf
+#   template_path - required, example: /daemon.conf.tpl
+#   chown_string  - optional, example: bitcoin:bitcoin
+#   chmod_string  - optional, example: 0755
+######################################################################
+check_kv_config() {
+  if [[ -v DISABLE_KV_CONFIG ]]; then
+    echo_log "DISABLE_KV_CONFIG is set. Skipping KV config discovery."
+  else
+    if [[ $# -lt 2 ]]; then
+      echo_err "[${FUNCNAME[0]}] No config_name and/or template_path specified"
+      exit 1
+    fi
+    local config_name="$1"
+    local template_path="$2"
+    local runtime_path='/config/'
+    local tmp_file='/config/.kv_config_result'
+    echo_log "Trying to generate configuration from KV store"
+    echo_log "CONSUL_HTTP_ADDR = ${CONSUL_HTTP_ADDR}"
+    consul-template -log-level=err \
+                    -template "${template_path}:${tmp_file}" -once
+    if grep -qv '^[[:space:]]*$' "${tmp_file}" ; then
+      # if generated config is not empty
+      touch -a "${runtime_path}${config_name}"
+      if diff "${runtime_path}${config_name}" "${tmp_file}" >/dev/null ; then
+        echo_log "Config generated from KV is identical to runtime. Skipping."
+      else
+        echo_log "Config generated from KV is different:"
+        diff "${runtime_path}${config_name}" "${tmp_file}" || /bin/true
+        echo_log "Updating runtime config ${runtime_path}${config_name}"
+        cp "${tmp_file}" "${runtime_path}${config_name}"
+        if [[ $# -ge 3 ]]; then
+          echo_log "Will do 'chown $3 ${runtime_path}${config_name}' now"
+          chown $3 "${runtime_path}${config_name}"
+        fi
+        if [[ $# -ge 4 ]]; then
+          echo_log "Will do 'chmod $4 ${runtime_path}${config_name}' now"
+          chmod $4 "${runtime_path}${config_name}"
+        fi
+      fi
+    else
+      echo_log "Generated config is empty (no data available?). Skipping."
+    fi
+    rm -f --preserve-root "${tmp_file}"
+  fi
+}
+
 
 ######################################################################
 # Executes bootstrap command if test_path file/directory is absent
