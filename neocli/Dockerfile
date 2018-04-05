@@ -56,4 +56,4 @@ COPY ep_lib.sh /ep_lib.sh
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
-EXPOSE 10331 10332 10333 10334 20331 20332 20333 20334
+EXPOSE 10331 10332 10333 10334 9001
