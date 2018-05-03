@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 
-ENV BIMONEROD v0.11.0.0
+ENV BIMONEROD v0.12.0.0
 ENV BIMONEROD_URL https://downloads.getmonero.org/cli/monero-linux-x64-${BIMONEROD}.tar.bz2
 RUN groupadd -r bitmonero && useradd -r -m -g bitmonero bitmonero
 
