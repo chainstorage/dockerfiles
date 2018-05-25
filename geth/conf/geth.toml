@@ -1,0 +1,14 @@
+[Eth]
+DatabaseCache = 1024
+
+[Node]
+DataDir = "/data"
+HTTPHost = "127.0.0.1"
+HTTPPort = 8545
+HTTPModules = ["net", "web3", "eth", "shh"]
+WSPort = 8546
+WSModules = ["net", "web3", "eth", "shh"]
+
+[Node.P2P]
+ListenAddr = ":30303"
+
