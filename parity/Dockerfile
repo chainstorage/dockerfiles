@@ -9,7 +9,7 @@ RUN set -ex \
 	&& rm -rf /var/lib/apt/lists/*
 
 ENV PARITY_VERSION v1.8.10
-ENV DEPS_FOR_BUILDING g++ build-essential curl git file libssl-dev pkg-config libudev-dev
+ENV DEPS_FOR_BUILDING g++ build-essential curl file libssl-dev pkg-config libudev-dev
 
 RUN { set -ex; \
     # install deps
