@@ -3,14 +3,18 @@ FROM ubuntu:16.04
 RUN groupadd --system --gid 19000 parity \
 	&& useradd --system --uid 19000 --create-home --gid parity parity
 
-ENV PARITY_VERSION v1.7.12
-ENV DEPS_FOR_RUNING supervisor python-requests ca-certificates openssl wget
+RUN set -ex \
+	&& apt-get update \
+	&& apt-get install -qq ca-certificates dirmngr supervisor python-requests gpgv git wget openssl \
+	&& rm -rf /var/lib/apt/lists/*
+
+ENV PARITY_VERSION v1.8.10
 ENV DEPS_FOR_BUILDING g++ build-essential curl git file libssl-dev pkg-config libudev-dev
 
 RUN { set -ex; \
     # install deps
     apt-get update; \
-    apt-get install --no-install-recommends -y $DEPS_FOR_RUNING $DEPS_FOR_BUILDING; \
+    apt-get install --no-install-recommends -y $DEPS_FOR_BUILDING; \
 
     ####################### DAEMON ###################################################
     curl https://sh.rustup.rs -sSf | sh -s -- -y; \
@@ -33,10 +37,6 @@ RUN { set -ex; \
     mv target/release/parity /usr/bin; \
     rm -rf /root/.cargo /root/.rustup; \
 
-    ####################### SUPERVISORD ################################################
-    git clone https://github.com/chainstorage/CCUnRPC.git  /usr/lib/python2.7/dist-packages/ccunrpc/; \
-    mkdir -p  /var/run; \
-
     ########################## CLEAN UP ################################################
     apt-get remove -y $DEPS_FOR_BUILDING; \
     apt-get autoremove -y; \
@@ -50,9 +50,18 @@ RUN { set -ex; \
     mkdir /config; \
     mkdir /logs; \
 }
+
 VOLUME ["/data", "/secrets", "/config", "/logs"]
 
+ENV PARITY_OPTIONS=
+
 COPY conf/* /default/
+
+# supervisor
+RUN { set -ex; \
+    git clone https://github.com/chainstorage/CCUnRPC.git /usr/lib/python2.7/dist-packages/ccunrpc/; \
+    mkdir -p /var/run; \
+}
 
 COPY ep_lib.sh /ep_lib.sh
 COPY entrypoint.sh /entrypoint.sh
