@@ -18,9 +18,9 @@ RUN set -ex \
     && apt-get update \
     && apt-get install -qq dotnet-runtime-2.0.6
 
-ENV NEO_VERSION 2.7.4
-ENV NEO_URL https://github.com/neo-project/neo-cli/releases/download/v2.7.4/neo-cli-linux-x64.zip
-ENV NEO_SHA256 1B07A92E2867770B2DC5CEF830C151EAE3354353BB0D782D1642FBF7C5DEBC01
+ENV NEO_VERSION v2.7.5
+ENV NEO_URL https://github.com/neo-project/neo-cli/releases/download/$NEO_VERSION/neo-cli-linux-x64.zip
+ENV NEO_SHA256 42E13AB9B5CB716AA9C125704E2EFC9EC33A53955616D3D744F135FB4B18D2A5
 ENV NEO_ROOT_DIR /opt
 
 # install neo binaries
@@ -32,10 +32,10 @@ RUN set -ex \
 
 RUN { set -ex; \
     mkdir /default; \
-    mkdir /data; chown -R neo:neo /data; \
-    mkdir /secrets; chown -R neo:neo /secrets;\
+    mkdir /data; chown neo:neo /data; \
+    mkdir /secrets; chown neo:neo /secrets; \
     mkdir /config; \
-    mkdir /logs; \
+    mkdir /logs; chown neo:neo /logs; \
 }
 VOLUME ["/data", "/secrets", "/config", "/logs"]
 

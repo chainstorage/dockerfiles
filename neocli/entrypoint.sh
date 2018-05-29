@@ -7,7 +7,7 @@ set -e
 source ./ep_lib.sh
 
 ########## /logs ###################################################
-#chmod 777 /logs
+chown neo /logs
 
 ########## /config #################################################
 check_config supervisord.conf
