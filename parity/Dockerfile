@@ -8,7 +8,7 @@ RUN set -ex \
 	&& apt-get install -qq ca-certificates dirmngr supervisor python-requests gpgv git wget openssl \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV PARITY_VERSION v1.8.10
+ENV PARITY_VERSION v1.8.11
 ENV DEPS_FOR_BUILDING g++ build-essential curl file libssl-dev pkg-config libudev-dev
 
 RUN { set -ex; \
